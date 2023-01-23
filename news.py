@@ -2,7 +2,7 @@ import feedparser
 from telegram.ext import Updater, JobQueue
 
 # Inisialisasi bot Telegram
-updater = Updater(token='5837266855:AAGIuaQqoLuNJh4f-H01mi9Pu4_MkmlqbLk', use_context=True)
+updater = Updater(5837266855:AAGIuaQqoLuNJh4f-H01mi9Pu4_MkmlqbLk, use_context=True)
 job_queue = updater.job_queue
 
 # Fungsi untuk mengambil berita terbaru
