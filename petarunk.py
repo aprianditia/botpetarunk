@@ -20,4 +20,4 @@ for currency in data:
             message = f"Wow, terjadi kenaikan harga mata uang {currency_name} sebesar {change}%! Harga saat ini adalah Rp {formatted_price} dengan volume pembelian sebesar {volume_buy} dan volume penjualan sebesar {volume_sell}."
         elif change < 0:
             message = f"Oh tidak, terjadi penurunan harga mata uang {currency_name} sebesar {change}%! Harga saat ini adalah Rp {formatted_price} dengan volume pembelian sebesar {volume_buy} dan volume penjualan sebesar {volume_sell}."
-        bot.send_message(chat_id="SukamajuPetarunk", text
+        bot.send_message(chat_id="SukamajuPetarunk", text=message)
