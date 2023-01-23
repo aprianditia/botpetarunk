@@ -3,7 +3,7 @@ import telegram
 from telegram.ext import Updater, CommandHandler, JobQueue
 
 # Inisialisasi bot Telegram
-updater = Updater(token='YOUR_TELEGRAM_BOT_TOKEN', use_context=True)
+updater = Updater(token='5837266855:AAGIuaQqoLuNJh4f-H01mi9Pu4_MkmlqbLk', use_context=True)
 dispatcher = updater.dispatcher
 
 # Fungsi untuk mengambil berita terbaru
