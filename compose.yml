@@ -6,7 +6,3 @@ services:
     environment:
       - TELEGRAM_TOKEN=5837266855:AAGIuaQqoLuNJh4f-H01mi9Pu4_MkmlqbLk
       - CHAT_ID=SukamajuPetarunk
-    volumes:
-      - .:/app
-    depends_on:
-      - redis
