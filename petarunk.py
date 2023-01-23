@@ -33,5 +33,4 @@ try:
                 message = f"Perhatian! Terjadi lonjakan harga yang sangat besar pada mata uang {currency_name} sebesar {change}% dalam waktu kurang dari {currency['time']} detik! Harga saat ini adalah Rp {formatted_price} dengan volume pembelian sebesar {volume_buy} dan volume penjualan sebesar {volume_sell}. Segera lakukan tindakan sebelum harga semakin naik!"
             elif change < 0:
                 message = f"Perhatian! Terjadi lonjakan harga yang sangat besar pada mata uang {currency_name} sebesar {change}% dalam waktu kurang dari {currency['time']} detik! Harga saat ini adalah Rp {formatted_price} dengan volume pembelian sebesar {volume_buy} dan volume penjualan sebesar {volume_sell}. Segera lakukan tindakan sebelum harga semakin turun!"
-            bot
-        bot.send_message(chat_id="SukamajuPetarunk", text=message)
+            bot.send_message(chat_id="SukamajuPetarunk", text=message)
