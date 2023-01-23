@@ -1,34 +1,18 @@
-import feedparser
-from telegram.ext import Updater, JobQueue
+import time
+import requests
 
-# Inisialisasi bot Telegram
-updater = Updater(5837266855:AAGIuaQqoLuNJh4f-H01mi9Pu4_MkmlqbLk, use_context=True)
-job_queue = updater.job_queue
+token = '5837266855:AAGIuaQqoLuNJh4f-H01mi9Pu4_MkmlqbLk'
 
-# Fungsi untuk mengambil berita terbaru
-def get_latest_news():
-    # Daftar situs berita yang ingin dimonitor
-    news_sources = {
-        'coindesk': 'https://www.coindesk.com/feed',
-        'cointelegraph': 'https://cointelegraph.com/feed',
-        'crypto news': 'https://www.cryptonews.com/rss/'
-    }
-    news_list = []
-    for source, feed_url in news_sources.items():
-        feed = feedparser.parse(feed_url)
-        for entry in feed.entries:
-            news_list.append((source, entry.title, entry.link))
-    return news_list
+while True:
+    # Ambil data harga kripto top gainer dari Indodax
+    # (Anda perlu menggunakan API atau scraping untuk melakukan ini)
+    top_gainers = get_top_gainers_from_indodax()
 
-# Fungsi yang akan dipanggil untuk mengirim notifikasi
-def send_news(context):
-    news_list = get_latest_news()
-    for news in news_list:
-        message = f"Sumber: {news[0]}\nJudul: {news[1]}\nLink: {news[2]}\n"
-        context.bot.send_message(chat_id=SukamajuPetarunk, text=message)
+    # Kirim notifikasi harga kripto top gainer ke channel atau grup Telegram
+    for coin in top_gainers:
+        message = f'{coin["name"]} - Rp {coin["price"]}, {coin["change"]}%'
+        data = {'chat_id': 'SukamajuPetarunk', 'text': message}
+        requests.post(f'https://api.telegram.org/bot{token}/sendMessage', data=data)
 
-# JobQueue untuk mengeksekusi send_news setiap 15 menit
-job_queue.run_repeating(send_news, interval=900, first=0)
-
-# Jalankan bot
-updater.start_polling()
+    # Tunggu selama 5 menit sebelum mengirim notifikasi lagi
+    time.sleep(300)
