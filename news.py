@@ -1,10 +1,9 @@
 import feedparser
-import telegram
-from telegram.ext import Updater, CommandHandler, JobQueue
+from telegram.ext import Updater, JobQueue
 
 # Inisialisasi bot Telegram
 updater = Updater(token='5837266855:AAGIuaQqoLuNJh4f-H01mi9Pu4_MkmlqbLk', use_context=True)
-dispatcher = updater.dispatcher
+job_queue = updater.job_queue
 
 # Fungsi untuk mengambil berita terbaru
 def get_latest_news():
@@ -21,20 +20,15 @@ def get_latest_news():
             news_list.append((source, entry.title, entry.link))
     return news_list
 
-# Fungsi yang akan dipanggil ketika pengguna mengetik /news
+# Fungsi yang akan dipanggil untuk mengirim notifikasi
 def send_news(context):
     news_list = get_latest_news()
     for news in news_list:
         message = f"Sumber: {news[0]}\nJudul: {news[1]}\nLink: {news[2]}\n"
         context.bot.send_message(chat_id=SukamajuPetarunk, text=message)
 
-# Tambahkan fungsi send_news sebagai handler untuk perintah /news
-news_handler = CommandHandler('news', send_news)
-dispatcher.add_handler(news_handler)
+# JobQueue untuk mengeksekusi send_news setiap 15 menit
+job_queue.run_repeating(send_news, interval=900, first=0)
 
 # Jalankan bot
 updater.start_polling()
-
-# set job queue
-job_queue = updater.job_queue
-job_queue.run_repeating(send_news, interval=900, first=0)
