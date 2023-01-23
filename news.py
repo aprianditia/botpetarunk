@@ -1,40 +1,32 @@
-import time
 import requests
-from bs4 import BeautifulSoup
+import json
+from telegram.ext import Updater, CommandHandler
 
-def get_top_gainers_from_indodax():
-    url = 'https://indodax.com/id/market'
-    page = requests.get(url)
-    soup = BeautifulSoup(page.content, 'html.parser')
-    table = soup.find_all('table')[0]
-    rows = table.find_all('tr')
+# Function to get current crypto price from Indodax
+def get_price(crypto):
+    url = "https://indodax.com/api/{}/ticker".format(crypto)
+    response = requests.get(url)
+    data = json.loads(response.text)
+    return data["ticker"]["last"]
 
-    coins = []
-    for row in rows[1:]:
-        cols = row.find_all('td')
-        coin = {}
-        coin['name'] = cols[1].find_all('a')[0].text.strip()
-        coin['price'] = cols[2].text.strip()
-        coin['change'] = cols[5].text.strip()
-        coins.append(coin)
+# Function to check for price change and send notification
+def check_price(update, context):
+    crypto = "BTC"  # Example for Bitcoin
+    current_price = get_price(crypto)
+    if current_price > previous_price + (previous_price * 0.3):
+        message = "ALERT: {} price has increased by 30%! Current price: {}".format(crypto, current_price)
+    elif current_price < previous_price - (previous_price * 0.3):
+        message = "ALERT: {} price has decreased by 30%! Current price: {}".format(crypto, current_price)
+    else:
+        message = "No drastic change in {} price".format(crypto)
+    context.bot.send_message(chat_id=update.message.chat_id, text=message)
 
-    # Sort list of coins by change in descending order
-    coins = sorted(coins, key=lambda x: float(x['change'][:-1]), reverse=True)
+# Telegram bot setup
+updater = Updater(token="YOUR_BOT_TOKEN", use_context=True)
+dispatcher = updater.dispatcher
 
-    # Return top 5 gainers
-    return coins[:5]
+# Command handler for /checkprice command
+dispatcher.add_handler(CommandHandler("checkprice", check_price))
 
-token = 'YOUR_BOT_TOKEN'
-
-while True:
-    # Ambil data top 5 kripto berdasarkan perubahan harga tertinggi dalam persen dalam waktu 24 jam
-    top_gainers = get_top_gainers_from_indodax()
-
-    # Kirim notifikasi harga kripto top gainer ke channel atau grup Telegram
-    for coin in top_gainers:
-        message = f'{coin["name"]} - Rp {coin["price"]}, {coin["change"]}'
-        data = {'chat_id': '@your_channel_username', 'text': message}
-        requests.post(f'https://api.telegram.org/bot{token}/sendMessage', data=data)
-
-    # Tunggu selama 5 menit sebelum mengirim notifikasi lagi
-    time.sleep(300)
+# Start polling
+updater.start_polling()
